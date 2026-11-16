@@ -1,0 +1,116 @@
+{
+  "policy_id": "CORVO-PROC-POL-04",
+  "version": "5.1",
+  "effective_date": "2026-12-01",
+  "name": "Corvo Procurement Policy (PR to PO)",
+  "owner": "Head of Procurement",
+  "applies_to_plants": [
+    "PUN1",
+    "CHK1"
+  ],
+  "clubbing_rules": {
+    "same_item": true,
+    "same_plant": true,
+    "creation_window_days": 14,
+    "need_by_window_days": 7
+  },
+  "history_lookbacks": {
+    "po_history_lookback_days": 365,
+    "preferred_supplier_lookback_days": 548
+  },
+  "ranking_weights": {
+    "po_count": 1.0,
+    "recency": 6.0,
+    "contract": 3.0,
+    "on_time": 2.0,
+    "quality": 2.0
+  },
+  "consolidation_window_hours": 24,
+  "rules": [
+    {
+      "rule_id": "5.1",
+      "name": "Capex Sourcing",
+      "clause": "5.1",
+      "condition": {
+        "item_type": [
+          "Capex"
+        ]
+      },
+      "outcome": "SOURCING_REQUEST",
+      "route": "CAPEX_SOURCING",
+      "suggest_count": 5,
+      "supplier_selection": null,
+      "requires_approval": "capex"
+    },
+    {
+      "rule_id": "5.2",
+      "name": "Contract PO",
+      "clause": "5.2",
+      "condition": {
+        "has_valid_contract": true
+      },
+      "outcome": "PO",
+      "route": "CONTRACT_PO",
+      "suggest_count": null,
+      "supplier_selection": "contract_supplier",
+      "requires_approval": null
+    },
+    {
+      "rule_id": "5.3",
+      "name": "Emergency PO",
+      "clause": "5.3",
+      "condition": {
+        "urgency": [
+          "Emergency"
+        ],
+        "max_value": 750000.0,
+        "bought_in_last_365_days": true
+      },
+      "outcome": "PO",
+      "route": "EMERGENCY_PO",
+      "suggest_count": null,
+      "supplier_selection": "1st_preferred",
+      "requires_approval": null
+    },
+    {
+      "rule_id": "5.4",
+      "name": "Spot PO",
+      "clause": "5.4",
+      "condition": {
+        "max_value_exclusive": 300000.0,
+        "bought_in_last_365_days": true
+      },
+      "outcome": "PO",
+      "route": "SPOT_PO",
+      "suggest_count": null,
+      "supplier_selection": "1st_preferred",
+      "requires_approval": null
+    },
+    {
+      "rule_id": "5.5",
+      "name": "RFQ",
+      "clause": "5.5",
+      "condition": {
+        "max_value_exclusive": 1000000
+      },
+      "outcome": "SOURCING_REQUEST",
+      "route": "RFQ",
+      "suggest_count": 3,
+      "supplier_selection": null,
+      "requires_approval": null
+    },
+    {
+      "rule_id": "5.6",
+      "name": "RFP",
+      "clause": "5.6",
+      "condition": {
+        "min_value": 1000000
+      },
+      "outcome": "SOURCING_REQUEST",
+      "route": "RFP",
+      "suggest_count": 5,
+      "supplier_selection": null,
+      "requires_approval": null
+    }
+  ]
+}

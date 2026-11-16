@@ -1,0 +1,29 @@
+# Task kit and data files (Mandated by Cantill: "must not contain the task data files")
+Cantill_FullStack_Task_Kit/
+*.csv
+!submission/*.csv
+
+# Python environment & cache
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+
+# Node / Frontend
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+.npm
+*.log
+
+# Environment variables
+.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
