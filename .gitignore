@@ -3,7 +3,10 @@ Cantill_FullStack_Task_Kit/
 *.csv
 !submission/*.csv
 
-# Python environment & cache
+# SQLite Database
+*.db
+backend/data/*.db
+data/
 .venv/
 venv/
 __pycache__/
