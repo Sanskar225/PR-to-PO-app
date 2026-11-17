@@ -19,15 +19,18 @@ This application automates the Purchase Requisition to Purchase Order (PR-to-PO)
   - `rapidfuzz`: Token-ratio fuzzy string matching with domain abbreviation normalization for free-text PR items.
   - `pypdf`: PyPDF parser for executed contract PDFs (Schedule A rate extraction).
 - **Frontend Architecture**:
-  - React 18 + TypeScript + Vite + Lucide Icons.
-  - **Feature-Driven Clean Architecture**:
-    - `types/`: Strict TypeScript domain interfaces (`RequirementDecision`, `ParsedPR`, `ContractItem`, `RankedSupplier`, `BatchProcessResult`, etc.).
-    - `api/`: Centralized HTTP client (`client.ts`) with typed endpoints, error interceptors, and modular service abstractions (`chatService`, `buyerService`, `batchService`, `policyService`, `supplierService`, `contractService`).
-    - `context/`: Global reactive state management (`AppContext` for active policy version & cascading refresh signals; `ToastContext` for non-blocking accessible notifications).
-    - `components/common/`: Reusable UI primitives (`Badge`, `Button`, `Card`, `Modal`, `StatCard`).
-    - `components/layout/`: Corporate branding `Header`, responsive `Navbar`, and `Footer`.
-    - `features/`: Decomposed feature views (`ChatView`, `BuyerView`, `BatchView`, `PolicyView`, `SuppliersView`, `ContractsView`).
-  - Zero `alert()` calls, complete TypeScript type safety, and sub-2.5s production bundle compilation.
+  - React 18 + TypeScript + Vite + TanStack Query v5 + Lucide Icons.
+  - **Feature-Sliced Clean Architecture (`frontend/src/features/procurement/`)**:
+    - `components/dialogs/`: Modal dialogs (`OverrideDialog.tsx`, `PolicyActivationDialog.tsx`).
+    - `components/panels/`: Domain panels (`BuyerKpiPanel.tsx`, `RequirementsTablePanel.tsx`, `BatchSummaryPanel.tsx`, `PolicyDiffPanel.tsx`, `SupplierRankingTablePanel.tsx`, `ContractsTablePanel.tsx`, etc.).
+    - `components/cards/`: Specialized cards (`PRPreviewCard.tsx`, `QuickPromptChips.tsx`).
+    - `components/index.ts`: Clean barrel export.
+    - `hooks/`: TanStack Query v5 hooks (`useBuyer.ts`, `usePolicy.ts`, `useBatch.ts`, `useContracts.ts`, `useSuppliers.ts`, `useChat.ts`) with automatic query caching and cache invalidation.
+    - `lib/`: Domain formatters (`formatINR`, `formatCompactINR`, `formatDate`), icon mappings, and route presets.
+    - `pages/`: Clean page containers (`ChatPage.tsx`, `BuyerWorkspacePage.tsx`, `BatchProcessorPage.tsx`, `PolicyManagerPage.tsx`, `PreferredSuppliersPage.tsx`, `ContractsRegisterPage.tsx`).
+    - `services/index.ts`: Typed API client & DTO service methods.
+    - `context/`: `AppContext` (policy version sync) & `ToastContext` (production notification system).
+  - Zero `alert()` calls, complete TypeScript type safety, and sub-2s production bundle compilation.
 - **Containerization & DevOps**:
   - Multi-stage Docker build (`node:20-slim` builder + `python:3.11-slim` runner) with `docker-compose.yml` for 1-command startup.
 

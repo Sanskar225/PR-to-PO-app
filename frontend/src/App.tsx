@@ -4,12 +4,14 @@ import { AppProvider } from './context/AppContext';
 import { Header } from './components/layout/Header';
 import { Navbar, NavTabId } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
-import { ChatView } from './features/chat/ChatView';
-import { BuyerView } from './features/buyer/BuyerView';
-import { BatchView } from './features/batch/BatchView';
-import { PolicyView } from './features/policy/PolicyView';
-import { SuppliersView } from './features/suppliers/SuppliersView';
-import { ContractsView } from './features/contracts/ContractsView';
+import { 
+  ChatPage, 
+  BuyerWorkspacePage, 
+  BatchProcessorPage, 
+  PolicyManagerPage, 
+  PreferredSuppliersPage, 
+  ContractsRegisterPage 
+} from './features/procurement/pages';
 
 const AppContent: React.FC = () => {
   const [activeTab, setActiveTab] = useState<NavTabId>('chat');
@@ -20,12 +22,12 @@ const AppContent: React.FC = () => {
       <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
 
       <main className="main-content">
-        {activeTab === 'chat' && <ChatView />}
-        {activeTab === 'buyer' && <BuyerView />}
-        {activeTab === 'batch' && <BatchView />}
-        {activeTab === 'policy' && <PolicyView />}
-        {activeTab === 'suppliers' && <SuppliersView />}
-        {activeTab === 'contracts' && <ContractsView />}
+        {activeTab === 'chat' && <ChatPage />}
+        {activeTab === 'buyer' && <BuyerWorkspacePage />}
+        {activeTab === 'batch' && <BatchProcessorPage />}
+        {activeTab === 'policy' && <PolicyManagerPage />}
+        {activeTab === 'suppliers' && <PreferredSuppliersPage />}
+        {activeTab === 'contracts' && <ContractsRegisterPage />}
       </main>
 
       <Footer />

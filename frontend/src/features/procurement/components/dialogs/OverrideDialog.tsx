@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { ShieldAlert, AlertCircle } from 'lucide-react';
-import { RequirementDecision, RouteType } from '../../types';
-import { Modal } from '../../components/common/Modal';
-import { Button } from '../../components/common/Button';
+import { RequirementDecision, RouteType } from '../../../../types';
+import { Modal } from '../../../../components/common/Modal';
+import { Button } from '../../../../components/common/Button';
+import { formatINR } from '../../lib/formatters';
 
-interface OverrideModalProps {
+interface OverrideDialogProps {
   requirement: RequirementDecision | null;
   onClose: () => void;
   onSubmit: (groupId: string, route: RouteType | string, comment: string, buyerName: string) => Promise<void>;
   isLoading: boolean;
 }
 
-export const OverrideModal: React.FC<OverrideModalProps> = ({
+export const OverrideDialog: React.FC<OverrideDialogProps> = ({
   requirement,
   onClose,
   onSubmit,
@@ -26,10 +27,9 @@ export const OverrideModal: React.FC<OverrideModalProps> = ({
 
   const handleSubmit = async () => {
     if (!overrideComment.trim()) {
-      setErrorText('A written justification is mandatory under Policy 8.1.');
+      setErrorText('A written justification is mandatory under Policy Clause 8.1.');
       return;
     }
-
     setErrorText('');
     await onSubmit(requirement.group_id, overrideRoute, overrideComment.trim(), buyerName);
   };
@@ -57,7 +57,7 @@ export const OverrideModal: React.FC<OverrideModalProps> = ({
     >
       <div>
         <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.25rem', lineHeight: '1.4' }}>
-          <strong>Policy Clause 8.1</strong> authorizes Lead Buyers to manually override automated routing with mandatory recorded justification.
+          <strong>Policy Clause 8.1</strong> authorizes Lead Buyers to manually override automated routing with a recorded audit justification.
         </p>
 
         <div style={{ background: 'var(--bg-secondary)', padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', marginBottom: '1.25rem', border: '1px solid var(--border-color)', fontSize: '0.85rem' }}>
@@ -66,7 +66,7 @@ export const OverrideModal: React.FC<OverrideModalProps> = ({
             <strong>System Decided Route:</strong> <code style={{ color: 'var(--accent-cyan)' }}>{requirement.route}</code>
           </div>
           <div style={{ marginTop: '0.25rem' }}>
-            <strong>Requirement Value:</strong> ₹{requirement.group_value_inr.toLocaleString()}
+            <strong>Requirement Value:</strong> {formatINR(requirement.group_value_inr)}
           </div>
         </div>
 

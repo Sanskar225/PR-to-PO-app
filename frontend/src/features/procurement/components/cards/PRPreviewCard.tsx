@@ -1,9 +1,9 @@
 import React from 'react';
 import { FileText, CheckCircle2, AlertTriangle } from 'lucide-react';
-import { ParsedPR } from '../../types';
-import { Card } from '../../components/common/Card';
-import { Button } from '../../components/common/Button';
-import { Badge } from '../../components/common/Badge';
+import { ParsedPR } from '../../../../types';
+import { Card } from '../../../../components/common/Card';
+import { Button } from '../../../../components/common/Button';
+import { Badge } from '../../../../components/common/Badge';
 
 interface PRPreviewCardProps {
   parsedPR: ParsedPR | null;

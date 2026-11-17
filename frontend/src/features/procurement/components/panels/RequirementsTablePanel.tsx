@@ -1,17 +1,18 @@
 import React from 'react';
 import { Check, Edit3 } from 'lucide-react';
-import { RequirementDecision } from '../../types';
-import { Badge } from '../../components/common/Badge';
-import { Button } from '../../components/common/Button';
+import { RequirementDecision } from '../../../../types';
+import { Badge } from '../../../../components/common/Badge';
+import { Button } from '../../../../components/common/Button';
+import { formatINR } from '../../lib/formatters';
 
-interface RequirementsTableProps {
+interface RequirementsTablePanelProps {
   requirements: RequirementDecision[];
   onApprove: (groupId: string) => void;
   onOpenOverride: (req: RequirementDecision) => void;
   isLoading: boolean;
 }
 
-export const RequirementsTable: React.FC<RequirementsTableProps> = ({
+export const RequirementsTablePanel: React.FC<RequirementsTablePanelProps> = ({
   requirements,
   onApprove,
   onOpenOverride,
@@ -19,8 +20,8 @@ export const RequirementsTable: React.FC<RequirementsTableProps> = ({
 }) => {
   if (requirements.length === 0) {
     return (
-      <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-dim)' }}>
-        No requirements match the selected filters.
+      <div style={{ textAlign: 'center', padding: '3.5rem 1rem', color: 'var(--text-dim)', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--border-color)' }}>
+        No requirements match the selected criteria.
       </div>
     );
   }
@@ -68,7 +69,7 @@ export const RequirementsTable: React.FC<RequirementsTableProps> = ({
                 )}
               </td>
               <td style={{ fontWeight: 700, color: 'var(--accent-cyan)' }}>
-                ₹{req.group_value_inr.toLocaleString()}
+                {formatINR(req.group_value_inr)}
               </td>
               <td style={{ fontSize: '0.8rem', maxWidth: '300px', color: 'var(--text-muted)', lineHeight: '1.3' }}>
                 {req.reason}
