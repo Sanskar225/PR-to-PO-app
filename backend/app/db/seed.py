@@ -18,6 +18,45 @@ def seed_database():
     init_db()
     db: Session = SessionLocal()
     try:
+        has_csv_files = (MASTER_DATA_DIR / "item_master.csv").exists()
+        fixture_file = Path(__file__).resolve().parent / "initial_seed.json"
+
+        # If CSV files are not available (e.g. Render production deployment / clean clone),
+        # seed from bundled JSON fixtures so the app is 100% operational out of the box.
+        if not has_csv_files and fixture_file.exists():
+            with open(fixture_file, "r") as fp:
+                seed_data = json.load(fp)
+
+            if db.query(PlantModel).count() == 0 and "plants" in seed_data:
+                for p in seed_data["plants"]:
+                    db.add(PlantModel(plant=p["plant"], name=p["name"]))
+                db.commit()
+
+            if db.query(ItemModel).count() == 0 and "items" in seed_data:
+                for i in seed_data["items"]:
+                    db.add(ItemModel(**i))
+                db.commit()
+
+            if db.query(SupplierModel).count() == 0 and "suppliers" in seed_data:
+                for s in seed_data["suppliers"]:
+                    db.add(SupplierModel(**s))
+                db.commit()
+
+            if db.query(ContractModel).count() == 0 and "contracts" in seed_data:
+                for c in seed_data["contracts"]:
+                    db.add(ContractModel(**c))
+                db.commit()
+                if "contract_lines" in seed_data:
+                    for cl in seed_data["contract_lines"]:
+                        db.add(ContractLineModel(**cl))
+                    db.commit()
+
+            if db.query(POHistoryModel).count() == 0 and "po_history" in seed_data:
+                for po in seed_data["po_history"]:
+                    db.add(POHistoryModel(**po))
+                db.commit()
+            print("Database seeded from bundled application fixtures.")
+
         # 1. Plants
         if db.query(PlantModel).count() == 0:
             plants_file = MASTER_DATA_DIR / "plants.csv"

@@ -8,6 +8,9 @@ from app.application.dto.schemas import PRLineDTO, BatchProcessResultDTO, Decisi
 from app.application.use_cases.process_batch_use_case import ProcessBatchUseCase
 from app.domain.repositories.interfaces import IRequirementRepository
 from app.presentation.api_v1.dependencies import get_process_batch_use_case, get_requirement_repo
+from app.db.session import get_db
+from app.db.models import DecisionModel
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="", tags=["Batch PR Processing"])
 
@@ -58,14 +61,40 @@ async def process_batch(
         raise HTTPException(status_code=400, detail=f"Batch execution failed: {str(e)}")
 
 @router.get("/export-decisions")
-async def export_decisions():
+async def export_decisions(db: Session = Depends(get_db)):
     """
     Task Brief Section 4: Output format CSV download.
     One row per PR line:
     pr_no,pr_line,resolved_item_code,group_id,po_id,decision,route,supplier_id,unit_price,group_value_inr,suggested_supplier_ids,policy_version,reason
     """
     global _latest_export_cache
-    if not _latest_export_cache:
+    decisions = _latest_export_cache
+
+    if not decisions:
+        # Fallback to persistent database if memory cache is empty
+        latest_row = db.query(DecisionModel).order_by(DecisionModel.id.desc()).first()
+        if latest_row:
+            rows = db.query(DecisionModel).filter_by(batch_id=latest_row.batch_id).order_by(DecisionModel.id.asc()).all()
+            decisions = [
+                DecisionOutputDTO(
+                    pr_no=r.pr_no,
+                    pr_line=r.pr_line,
+                    resolved_item_code=r.resolved_item_code,
+                    group_id=r.group_id,
+                    po_id=r.po_id,
+                    decision=r.decision,
+                    route=r.route,
+                    supplier_id=r.supplier_id,
+                    unit_price=r.unit_price,
+                    group_value_inr=r.group_value_inr,
+                    suggested_supplier_ids=r.suggested_supplier_ids,
+                    policy_version=r.policy_version,
+                    reason=r.reason
+                )
+                for r in rows
+            ]
+
+    if not decisions:
         raise HTTPException(status_code=400, detail="No decisions available. Please process a PR batch first.")
 
     output = io.StringIO()
@@ -88,7 +117,7 @@ async def export_decisions():
         "reason"
     ])
 
-    for d in _latest_export_cache:
+    for d in decisions:
         writer.writerow([
             d.pr_no,
             d.pr_line,
@@ -105,7 +134,7 @@ async def export_decisions():
             d.reason
         ])
 
-    version_slug = _latest_export_cache[0].policy_version.replace(".", "_")
+    version_slug = decisions[0].policy_version.replace(".", "_")
     filename = f"decisions_v{version_slug}.csv"
 
     return Response(
