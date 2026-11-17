@@ -1,25 +1,22 @@
-import os
 from pathlib import Path
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 from app.core.config import APP_TITLE, APP_VERSION
-from app.api.routes_pr import router as pr_router
-from app.api.routes_policy import router as policy_router
-from app.api.routes_suppliers import router as suppliers_router
-from app.api.routes_contracts import router as contracts_router
-from app.api.routes_buyer import router as buyer_router
+from app.core.exceptions import DomainException
+from app.core.logging import logger
 from app.db.seed import seed_database
+from app.presentation.api_v1.router import api_router
 
 app = FastAPI(
     title=APP_TITLE,
     version=APP_VERSION,
-    description="Automated Policy-Driven PR-to-PO Decision Engine for Corvo Engineering"
+    description="Automated Policy-Driven PR-to-PO Decision Engine for Corvo Engineering (Clean Architecture & DDD)"
 )
 
-# Enable CORS for frontend integrations
+# Global CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -28,21 +25,36 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Global Exception Handler for Domain Invariant Violations
+@app.exception_handler(DomainException)
+async def domain_exception_handler(request: Request, exc: DomainException):
+    logger.warning(f"Domain exception on {request.url.path}: {exc.message} ({exc.code})")
+    return JSONResponse(
+        status_code=400,
+        content={"status": "error", "code": exc.code, "message": exc.message}
+    )
+
 # Startup hook to guarantee database is seeded
 @app.on_event("startup")
 def on_startup():
     try:
         seed_database()
-        print("Database initialized and verified.")
+        logger.info("Database initialized and verified.")
     except Exception as e:
-        print(f"Database startup warning: {e}")
+        logger.error(f"Database startup warning: {e}")
 
-# Include Routers
-app.include_router(pr_router)
-app.include_router(policy_router)
-app.include_router(suppliers_router)
-app.include_router(contracts_router)
-app.include_router(buyer_router)
+# Mount API Router (/api)
+@app.get("/api/health")
+def health_check():
+    return {
+        "app": APP_TITLE,
+        "version": APP_VERSION,
+        "architecture": "Clean Architecture & Domain-Driven Design (DDD)",
+        "status": "healthy",
+        "docs_url": "/docs"
+    }
+
+app.include_router(api_router)
 
 # Mount frontend production build if available
 FRONTEND_DIST = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
@@ -61,6 +73,7 @@ else:
         return {
             "app": APP_TITLE,
             "version": APP_VERSION,
+            "architecture": "Clean Architecture & Domain-Driven Design (DDD)",
             "status": "healthy",
             "docs_url": "/docs"
         }

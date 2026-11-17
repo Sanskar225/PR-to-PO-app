@@ -125,23 +125,35 @@ python backend/tests/test_api_endpoints.py
 
 ---
 
-## 📂 Repository Structure
+## 📂 Repository Structure (Clean Architecture & DDD)
 
 ```
 ├── backend/
 │   ├── app/
-│   │   ├── api/             # REST endpoints (batch, policy, chat, suppliers, buyer)
-│   │   ├── core/            # App configuration
-│   │   ├── models/          # Pydantic schemas
-│   │   ├── services/        # Policy Engine, Fuzzy Matcher, Preferred Supplier Service, etc.
-│   │   └── main.py          # FastAPI application entrypoint
-│   ├── policies/            # Versioned JSON policy definitions (v5.0, v5.1, etc.)
-│   └── tests/               # Automated test suites for all policy worked examples
-├── frontend/                # React Vite web interface
-├── DECISIONS.md             # Business decisions, ranking formulas, edge cases
-├── APPROACH.md              # Architecture, methodologies, and AI tooling disclosure
-├── README.md                # Documentation and setup instructions
-├── Dockerfile               # Production container definition
-├── docker-compose.yml       # 1-command local runtime
-└── .gitignore               # Strict exclusion of task data files
+│   │   ├── domain/                  # Enterprise Business Rules & Aggregates
+│   │   │   ├── entities/            # RequirementGroup, ConsolidatedPO, RateContract, Supplier, Item
+│   │   │   ├── policies/            # Composite Specification Pattern & Dynamic Rule Evaluators
+│   │   │   ├── services/            # Anti-splitting Clubbing, Valuation Cascade, Supplier Ranking
+│   │   │   └── repositories/        # Abstract Repository Interfaces (IItemRepo, IContractRepo, etc.)
+│   │   ├── application/             # Application Business Rules (CQRS Use Cases & DTOs)
+│   │   │   ├── use_cases/           # ProcessBatch, ChatIntake, ApplyPolicyAmendment, RankSuppliers
+│   │   │   └── dto/                 # Input/Output Data Transfer Objects
+│   │   ├── infrastructure/          # Frameworks & Drivers Adapters
+│   │   │   ├── repositories/        # SQLAlchemy Relational SQLite Repositories
+│   │   │   ├── matching/            # RapidFuzz Abbreviation-Aware Token Matcher
+│   │   │   ├── pdf/                 # PyPDF Signed Contract Schedule A Parser
+│   │   │   └── db/                  # Database session, models, and seed service
+│   │   ├── presentation/            # Controllers & Delivery Mechanisms
+│   │   │   └── api_v1/              # FastAPI Router, Controllers & Dependency Injection
+│   │   ├── core/                    # Cross-cutting concerns (Exceptions, Config, Logging)
+│   │   └── main.py                  # ASGI Application & Static SPA Delivery
+│   ├── policies/                    # Declarative Policy-as-Data JSON Definitions (v5.0, v5.1)
+│   └── tests/                       # Comprehensive Invariant & Integration Test Suite
+├── frontend/                        # Production React 18 + TypeScript + Vite SPA
+├── DECISIONS.md                     # Business decisions, ranking formulas, edge cases
+├── APPROACH.md                      # Architecture, methodologies, and AI tooling disclosure
+├── README.md                        # Documentation and setup instructions
+├── Dockerfile                       # Multi-stage production container definition
+├── docker-compose.yml               # 1-command container orchestration
+└── .gitignore                       # Strict exclusion of raw task data files
 ```

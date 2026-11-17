@@ -103,7 +103,8 @@ class PRLineModel(Base):
 class RequirementGroupModel(Base):
     __tablename__ = "requirements"
     
-    group_id = Column(String(50), primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    group_id = Column(String(50), nullable=False, index=True)
     batch_id = Column(String(50), nullable=True, index=True)
     plant = Column(String(50), nullable=False)
     resolved_item_code = Column(String(50), nullable=False)
@@ -129,7 +130,7 @@ class DecisionModel(Base):
     pr_no = Column(String(50), nullable=False, index=True)
     pr_line = Column(Integer, nullable=False)
     resolved_item_code = Column(String(50), nullable=False)
-    group_id = Column(String(50), ForeignKey("requirements.group_id"), nullable=False, index=True)
+    group_id = Column(String(50), nullable=False, index=True)
     po_id = Column(String(50), nullable=True, index=True)
     decision = Column(String(50), nullable=False)
     route = Column(String(50), nullable=False)

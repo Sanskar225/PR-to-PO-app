@@ -4,7 +4,6 @@ sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 from fastapi.testclient import TestClient
 from app.main import app
-from app.services.policy_manager import policy_manager
 
 client = TestClient(app)
 
@@ -53,7 +52,7 @@ def test_amendment():
     assert batch_res["policy_version_applied"] == "5.1"
 
     # Reset back to 5.0 for clean baseline
-    policy_manager.set_active_version("5.0")
+    client.post("/api/policy/approve", json={"version": "5.0"})
     print("Reset back to 5.0 baseline. Amendment test passed 100%!")
 
 if __name__ == "__main__":

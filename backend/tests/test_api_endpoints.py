@@ -9,7 +9,7 @@ client = TestClient(app)
 
 def test_api():
     # 1. Health check
-    res = client.get("/")
+    res = client.get("/api/health")
     assert res.status_code == 200
     print("Health check passed:", res.json())
 
