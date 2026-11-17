@@ -150,6 +150,17 @@ python backend/tests/test_api_endpoints.py
 │   ├── policies/                    # Declarative Policy-as-Data JSON Definitions (v5.0, v5.1)
 │   └── tests/                       # Comprehensive Invariant & Integration Test Suite
 ├── frontend/                        # Production React 18 + TypeScript + Vite SPA
+│   ├── src/
+│   │   ├── types/                   # Domain TypeScript definitions (PR, Decision, Supplier, Contract)
+│   │   ├── api/                     # Centralized API client & typed service modules
+│   │   ├── context/                 # AppContext (global version sync) & ToastContext (notifications)
+│   │   ├── components/
+│   │   │   ├── common/              # Reusable UI primitives (Badge, Button, Card, Modal, StatCard)
+│   │   │   └── layout/              # Corporate Header, responsive Navbar, and Footer
+│   │   ├── features/                # Modular feature views (Chat, Buyer, Batch, Policy, Suppliers, Contracts)
+│   │   ├── App.tsx                  # Declarative root composition
+│   │   ├── main.tsx                 # Root React entrypoint with Context Providers
+│   │   └── style.css                # Polished design tokens and utility classes
 ├── DECISIONS.md                     # Business decisions, ranking formulas, edge cases
 ├── APPROACH.md                      # Architecture, methodologies, and AI tooling disclosure
 ├── README.md                        # Documentation and setup instructions

@@ -19,8 +19,15 @@ This application automates the Purchase Requisition to Purchase Order (PR-to-PO)
   - `rapidfuzz`: Token-ratio fuzzy string matching with domain abbreviation normalization for free-text PR items.
   - `pypdf`: PyPDF parser for executed contract PDFs (Schedule A rate extraction).
 - **Frontend Architecture**:
-  - React 18 + Vite + TypeScript + Tailwind CSS + Lucide Icons.
-  - Modular single-page architecture featuring Chat Intake, Buyer Workspace, Policy Manager, Batch Processor, and Preferred Suppliers Explorer.
+  - React 18 + TypeScript + Vite + Lucide Icons.
+  - **Feature-Driven Clean Architecture**:
+    - `types/`: Strict TypeScript domain interfaces (`RequirementDecision`, `ParsedPR`, `ContractItem`, `RankedSupplier`, `BatchProcessResult`, etc.).
+    - `api/`: Centralized HTTP client (`client.ts`) with typed endpoints, error interceptors, and modular service abstractions (`chatService`, `buyerService`, `batchService`, `policyService`, `supplierService`, `contractService`).
+    - `context/`: Global reactive state management (`AppContext` for active policy version & cascading refresh signals; `ToastContext` for non-blocking accessible notifications).
+    - `components/common/`: Reusable UI primitives (`Badge`, `Button`, `Card`, `Modal`, `StatCard`).
+    - `components/layout/`: Corporate branding `Header`, responsive `Navbar`, and `Footer`.
+    - `features/`: Decomposed feature views (`ChatView`, `BuyerView`, `BatchView`, `PolicyView`, `SuppliersView`, `ContractsView`).
+  - Zero `alert()` calls, complete TypeScript type safety, and sub-2.5s production bundle compilation.
 - **Containerization & DevOps**:
   - Multi-stage Docker build (`node:20-slim` builder + `python:3.11-slim` runner) with `docker-compose.yml` for 1-command startup.
 
