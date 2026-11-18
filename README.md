@@ -3,6 +3,15 @@
 > **Cantill.ai Full-stack Intern Challenge (Round 1)**  
 > Automated, policy-driven procurement engine that ingests Purchase Requisitions (PRs) via chat or batch CSV and determines whether to place a Purchase Order (PO) or initiate Sourcing (RFQ/RFP/Capex) based on declarative, versioned policy rules.
 
+[![Hosted Application](https://img.shields.io/badge/Hosted%20App-Live%20on%20Render-ea580c?style=for-the-badge&logo=render)](https://pr-to-po-app-73th.onrender.com/)
+[![API Documentation](https://img.shields.io/badge/Swagger%20Docs-FastAPI-0284c7?style=for-the-badge&logo=fastapi)](https://pr-to-po-app-73th.onrender.com/docs)
+[![Clean Architecture](https://img.shields.io/badge/Architecture-Clean%20Architecture%20%26%20DDD-16a34a?style=for-the-badge)](https://github.com/Sanskar225/PR-to-PO-app)
+
+- **Hosted App URL**: [https://pr-to-po-app-73th.onrender.com/](https://pr-to-po-app-73th.onrender.com/)
+- **Swagger API Docs**: [https://pr-to-po-app-73th.onrender.com/docs](https://pr-to-po-app-73th.onrender.com/docs)
+- **Health Check**: [https://pr-to-po-app-73th.onrender.com/api/health](https://pr-to-po-app-73th.onrender.com/api/health)
+- **GitHub Repository**: [https://github.com/Sanskar225/PR-to-PO-app](https://github.com/Sanskar225/PR-to-PO-app)
+
 ---
 
 ## 🌟 Key Features
