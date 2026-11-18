@@ -12,7 +12,7 @@ export const PreferredSuppliersPage: React.FC = () => {
 
   const filteredEntries = useMemo(() => {
     const entries = Object.entries(items);
-    if (!searchQuery) return entries.slice(0, 45);
+    if (!searchQuery) return entries;
 
     const q = searchQuery.toLowerCase();
     return entries.filter(([itemCode, suppliers]) => {
@@ -20,7 +20,7 @@ export const PreferredSuppliersPage: React.FC = () => {
       return suppliers.some(
         s => s.supplier_name.toLowerCase().includes(q) || s.supplier_id.toLowerCase().includes(q)
       );
-    }).slice(0, 45);
+    });
   }, [items, searchQuery]);
 
   return (
@@ -28,7 +28,7 @@ export const PreferredSuppliersPage: React.FC = () => {
       <Card
         title={
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Award size={20} color="var(--accent-amber)" />
+            <Award size={20} color="var(--accent-orange)" />
             <span>Preferred Supplier Directory (Policy Section 6)</span>
           </div>
         }
@@ -44,7 +44,7 @@ export const PreferredSuppliersPage: React.FC = () => {
           isLoading={isLoading}
         />
 
-        <SupplierRankingTablePanel entries={filteredEntries} />
+        <SupplierRankingTablePanel entries={filteredEntries} isLoading={isLoading} />
       </Card>
     </div>
   );

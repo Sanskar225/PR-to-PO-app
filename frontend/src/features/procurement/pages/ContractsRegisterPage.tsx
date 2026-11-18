@@ -90,7 +90,7 @@ export const ContractsRegisterPage: React.FC = () => {
           </div>
         </div>
 
-        <ContractsTablePanel contracts={contracts} />
+        <ContractsTablePanel contracts={contracts} isLoading={isLoading} />
       </Card>
     </div>
   );
