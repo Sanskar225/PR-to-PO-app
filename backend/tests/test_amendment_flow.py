@@ -10,6 +10,9 @@ client = TestClient(app)
 def test_amendment():
     print("=== TESTING POLICY AMENDMENT FLOW (BLIND TEST SIMULATION) ===")
     
+    # 0. Ensure clean baseline (5.0 active)
+    client.post("/api/policy/set-active/5.0")
+
     # 1. Check current policy version
     res = client.get("/api/policy/current")
     assert res.json()["version"] == "5.0"
@@ -52,7 +55,7 @@ def test_amendment():
     assert batch_res["policy_version_applied"] == "5.1"
 
     # Reset back to 5.0 for clean baseline
-    client.post("/api/policy/approve", json={"version": "5.0"})
+    client.post("/api/policy/set-active/5.0")
     print("Reset back to 5.0 baseline. Amendment test passed 100%!")
 
 if __name__ == "__main__":

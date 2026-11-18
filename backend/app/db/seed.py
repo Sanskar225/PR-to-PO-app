@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.db.session import engine, Base, SessionLocal
 from app.db.models import (
     ItemModel, SupplierModel, PlantModel, ContractModel, ContractLineModel,
-    POHistoryModel, PolicyVersionModel
+    POHistoryModel, PolicyVersionModel, DecisionModel
 )
 from app.core.config import MASTER_DATA_DIR, CONTRACTS_DIR, PDF_CONTRACTS_DIR, POLICIES_DIR
 from app.services.pdf_contract_extractor import extract_contract_from_pdf
@@ -214,6 +214,60 @@ def seed_database():
                     ))
                 db.commit()
                 print("Seeded Policy Version 5.0 into database.")
+
+        # 7. Initial Baseline Sample Batch Evaluation (ensures cloud deployment boots 100% operational)
+        if db.query(DecisionModel).count() == 0:
+            sample_prs = None
+            if fixture_file.exists():
+                with open(fixture_file, "r") as fp:
+                    fdata = json.load(fp)
+                    sample_prs = fdata.get("sample_prs")
+
+            if sample_prs:
+                from app.application.dto.schemas import PRLineDTO
+                from app.application.use_cases.process_batch_use_case import ProcessBatchUseCase
+                from app.infrastructure.repositories.sql_repositories import (
+                    SQLItemRepository, SQLSupplierRepository, SQLContractRepository,
+                    SQLPOHistoryRepository, SQLRequirementRepository, SQLPolicyRepository
+                )
+
+                item_repo = SQLItemRepository(db)
+                supplier_repo = SQLSupplierRepository(db)
+                contract_repo = SQLContractRepository(db)
+                po_history_repo = SQLPOHistoryRepository(db)
+                req_repo = SQLRequirementRepository(db)
+                policy_repo = SQLPolicyRepository(db)
+
+                use_case = ProcessBatchUseCase(
+                    item_repo=item_repo,
+                    supplier_repo=supplier_repo,
+                    contract_repo=contract_repo,
+                    po_history_repo=po_history_repo,
+                    requirement_repo=req_repo,
+                    policy_repo=policy_repo
+                )
+
+                dtos = [
+                    PRLineDTO(
+                        pr_no=str(r["pr_no"]),
+                        pr_line=int(r["pr_line"]),
+                        created_at=str(r["created_at"]),
+                        requester=str(r.get("requester") or "Requester"),
+                        department=str(r.get("department") or "Operations"),
+                        plant=str(r["plant"]),
+                        item_code=r.get("item_code"),
+                        description=str(r.get("description") or ""),
+                        quantity=float(r["quantity"]),
+                        uom=str(r.get("uom") or "NOS"),
+                        estimated_unit_price=float(r["estimated_unit_price"]) if r.get("estimated_unit_price") is not None else None,
+                        need_by_date=str(r["need_by_date"]),
+                        urgency=str(r.get("urgency") or "Normal")
+                    )
+                    for r in sample_prs
+                ]
+
+                result = use_case.execute(pr_dtos=dtos, filename="sample_pr_batch.csv")
+                print(f"Pre-populated initial baseline batch: {result.total_lines} lines -> {result.unique_requirements} groups -> {result.consolidated_pos} POs.")
 
     finally:
         db.close()

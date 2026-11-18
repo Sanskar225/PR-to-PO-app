@@ -17,6 +17,12 @@ def test_full_batch():
     seed_database()
     db = SessionLocal()
 
+    # Ensure baseline policy 5.0 is active
+    from app.db.models import PolicyVersionModel
+    for r in db.query(PolicyVersionModel).all():
+        r.is_active = (r.version == "5.0")
+    db.commit()
+
     use_case = ProcessBatchUseCase(
         item_repo=SQLItemRepository(db),
         supplier_repo=SQLSupplierRepository(db),

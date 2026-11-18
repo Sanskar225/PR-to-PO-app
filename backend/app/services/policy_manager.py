@@ -42,6 +42,18 @@ class PolicyManager:
     def set_active_version(self, version: str):
         if version in self.policies:
             self.active_version = version
+            try:
+                from app.db.session import SessionLocal
+                from app.db.models import PolicyVersionModel
+                db = SessionLocal()
+                try:
+                    for row in db.query(PolicyVersionModel).all():
+                        row.is_active = (row.version == version)
+                    db.commit()
+                finally:
+                    db.close()
+            except Exception:
+                pass
 
     def parse_amendment_text(self, text: str, base_version: Optional[str] = None) -> PolicyDiff:
         """
@@ -198,6 +210,32 @@ class PolicyManager:
 
         self.policies[doc.version] = doc
         self.active_version = doc.version
+        try:
+            from app.db.session import SessionLocal
+            from app.db.models import PolicyVersionModel
+            db = SessionLocal()
+            try:
+                for row in db.query(PolicyVersionModel).all():
+                    row.is_active = False
+                existing = db.query(PolicyVersionModel).filter_by(version=doc.version).first()
+                if existing:
+                    existing.is_active = True
+                    existing.rules_json = json.dumps(doc.model_dump())
+                else:
+                    db.add(PolicyVersionModel(
+                        version=doc.version,
+                        policy_id=doc.policy_id,
+                        name=doc.name,
+                        effective_date=doc.effective_date,
+                        owner=doc.owner,
+                        rules_json=json.dumps(doc.model_dump()),
+                        is_active=True
+                    ))
+                db.commit()
+            finally:
+                db.close()
+        except Exception:
+            pass
         return doc
 
 policy_manager = PolicyManager()
