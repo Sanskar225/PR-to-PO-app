@@ -24,7 +24,7 @@ export const PolicyActivationDialog: React.FC<PolicyActivationDialogProps> = ({
       onClose={onClose}
       title={
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <ShieldCheck size={20} color="var(--accent-emerald)" />
+          <ShieldCheck size={20} color="var(--accent-orange)" />
           <span>Confirm Policy Activation (v{version})</span>
         </div>
       }
@@ -33,14 +33,14 @@ export const PolicyActivationDialog: React.FC<PolicyActivationDialogProps> = ({
           <Button variant="secondary" onClick={onClose} disabled={isLoading}>
             Cancel
           </Button>
-          <Button variant="success" onClick={onConfirm} isLoading={isLoading}>
+          <Button variant="primary" onClick={onConfirm} isLoading={isLoading}>
             Approve & Activate
           </Button>
         </>
       }
     >
       <div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem', color: '#fbbf24' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem', color: '#b45309' }}>
           <AlertTriangle size={24} style={{ flexShrink: 0 }} />
           <span style={{ fontSize: '0.85rem' }}>
             Activating Policy Version <strong>{version}</strong> will dynamically update all specification thresholds across live decision engines without code modification.

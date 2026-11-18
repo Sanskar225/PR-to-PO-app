@@ -46,10 +46,10 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, onTabChange }) => {
               <span
                 style={{
                   fontSize: '0.7rem',
-                  padding: '1px 6px',
+                  padding: '2px 7px',
                   borderRadius: '10px',
-                  background: isActive ? 'var(--accent-cyan)' : 'var(--bg-tertiary)',
-                  color: isActive ? '#0f172a' : 'var(--text-muted)',
+                  background: isActive ? 'var(--accent-orange)' : '#f4f4f5',
+                  color: isActive ? '#ffffff' : 'var(--text-muted)',
                   fontWeight: 700,
                   marginLeft: '4px'
                 }}

@@ -16,14 +16,14 @@ export const PolicyDiffPanel: React.FC<PolicyDiffPanelProps> = ({
 }) => {
   return (
     <div>
-      <h4 style={{ fontSize: '0.95rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+      <h4 style={{ fontSize: '0.95rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--text-main)' }}>
         Diff & Specification Impact Preview
       </h4>
 
       {diff ? (
         <div
           style={{
-            background: 'var(--bg-secondary)',
+            background: '#ffffff',
             border: '1px solid var(--border-color)',
             borderRadius: 'var(--radius-md)',
             padding: '1.25rem',
@@ -31,11 +31,11 @@ export const PolicyDiffPanel: React.FC<PolicyDiffPanelProps> = ({
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-            <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--accent-cyan)' }}>
+            <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-dim)' }}>
               v{diff.base_version}
             </span>
-            <ArrowRight size={15} color="var(--text-dim)" />
-            <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--accent-emerald)' }}>
+            <ArrowRight size={15} color="var(--accent-orange)" />
+            <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--accent-orange)' }}>
               Proposed v{diff.new_version}
             </span>
           </div>
@@ -45,18 +45,20 @@ export const PolicyDiffPanel: React.FC<PolicyDiffPanelProps> = ({
           </div>
 
           <div style={{ marginBottom: '1.25rem' }}>
-            <div style={{ fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.5rem', color: '#f8fafc' }}>
+            <div style={{ fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--text-main)' }}>
               Detected Policy Clause Changes:
             </div>
-            <ul style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.825rem', color: '#34d399', lineHeight: '1.5' }}>
+            <ul style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.825rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
               {diff.summary_of_changes.map((change, idx) => (
-                <li key={idx} style={{ marginBottom: '4px' }}>{change}</li>
+                <li key={idx} style={{ marginBottom: '4px' }}>
+                  <strong style={{ color: 'var(--accent-orange)' }}>•</strong> {change}
+                </li>
               ))}
             </ul>
           </div>
 
           <Button
-            variant="success"
+            variant="primary"
             style={{ width: '100%' }}
             onClick={() => onApprove(diff.new_version)}
             isLoading={isApproving}
@@ -71,7 +73,7 @@ export const PolicyDiffPanel: React.FC<PolicyDiffPanelProps> = ({
             padding: '2.5rem 1.5rem',
             textAlign: 'center',
             color: 'var(--text-dim)',
-            background: 'rgba(255, 255, 255, 0.02)',
+            background: '#ffffff',
             borderRadius: 'var(--radius-md)',
             border: '1px dashed var(--border-color)',
             fontSize: '0.85rem'

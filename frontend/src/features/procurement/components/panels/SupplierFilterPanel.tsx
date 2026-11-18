@@ -62,7 +62,7 @@ export const SupplierFilterPanel: React.FC<SupplierFilterPanelProps> = ({
       <a
         href={exportUrl}
         download="preferred_suppliers.csv"
-        className="btn btn-success btn-sm"
+        className="btn btn-primary btn-sm"
         style={{ marginLeft: 'auto', textDecoration: 'none' }}
       >
         <Download size={14} />

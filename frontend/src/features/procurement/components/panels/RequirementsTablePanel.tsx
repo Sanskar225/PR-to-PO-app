@@ -20,7 +20,7 @@ export const RequirementsTablePanel: React.FC<RequirementsTablePanelProps> = ({
 }) => {
   if (requirements.length === 0) {
     return (
-      <div style={{ textAlign: 'center', padding: '3.5rem 1rem', color: 'var(--text-dim)', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--border-color)' }}>
+      <div style={{ textAlign: 'center', padding: '3.5rem 1rem', color: 'var(--text-dim)', background: '#ffffff', borderRadius: 'var(--radius-md)', border: '1px dashed var(--border-color)' }}>
         No requirements match the selected criteria.
       </div>
     );
@@ -46,7 +46,7 @@ export const RequirementsTablePanel: React.FC<RequirementsTablePanelProps> = ({
           {requirements.map((req) => (
             <tr key={req.group_id}>
               <td>
-                <code style={{ color: 'var(--accent-cyan)', fontWeight: 600 }}>{req.group_id}</code>
+                <code style={{ fontWeight: 600 }}>{req.group_id}</code>
               </td>
               <td>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -61,46 +61,51 @@ export const RequirementsTablePanel: React.FC<RequirementsTablePanelProps> = ({
               </td>
               <td>
                 {req.supplier_id ? (
-                  <span style={{ fontWeight: 600, color: '#fff' }}>{req.supplier_id}</span>
+                  <span style={{ fontWeight: 600, color: 'var(--text-main)' }}>{req.supplier_id}</span>
                 ) : (
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
                     {req.suggested_supplier_ids ? `Suggested: ${req.suggested_supplier_ids}` : 'None'}
                   </span>
                 )}
               </td>
-              <td style={{ fontWeight: 700, color: 'var(--accent-cyan)' }}>
+              <td style={{ fontWeight: 700, color: 'var(--text-main)' }}>
                 {formatINR(req.group_value_inr)}
               </td>
-              <td style={{ fontSize: '0.8rem', maxWidth: '300px', color: 'var(--text-muted)', lineHeight: '1.3' }}>
+              <td style={{ maxWidth: '280px', fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: '1.3' }}>
                 {req.reason}
               </td>
               <td>
-                <Badge 
-                  variant={req.status === 'Approved' ? 'emerald' : req.status === 'Overridden' ? 'amber' : 'dim'} 
+                <Badge
+                  variant={
+                    req.status === 'APPROVED' ? 'emerald' :
+                    req.status === 'OVERRIDDEN' ? 'purple' : 'dim'
+                  }
                   size="sm"
                 >
                   {req.status}
                 </Badge>
               </td>
               <td>
-                <div style={{ display: 'flex', gap: '0.4rem' }}>
+                <div style={{ display: 'flex', gap: '0.35rem' }}>
+                  {req.status !== 'APPROVED' && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onApprove(req.group_id)}
+                      disabled={isLoading}
+                      icon={<Check size={13} />}
+                      title="Approve Recommendation"
+                    >
+                      Approve
+                    </Button>
+                  )}
                   <Button
-                    variant="success"
-                    size="sm"
-                    onClick={() => onApprove(req.group_id)}
-                    title="1-Click Approve"
-                    disabled={isLoading || req.status === 'Approved'}
-                    icon={<Check size={12} />}
-                  >
-                    Approve
-                  </Button>
-                  <Button
-                    variant="outline"
+                    variant="secondary"
                     size="sm"
                     onClick={() => onOpenOverride(req)}
-                    title="Override Decision (Policy 8.1)"
                     disabled={isLoading}
-                    icon={<Edit3 size={12} />}
+                    icon={<Edit3 size={13} />}
+                    title="Manual Route Override (Policy 8.1)"
                   >
                     Override
                   </Button>

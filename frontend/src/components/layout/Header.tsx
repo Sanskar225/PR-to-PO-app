@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle2, Building2, ShieldCheck, Activity } from 'lucide-react';
+import { Building2, ShieldCheck, Activity } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 
 export const Header: React.FC = () => {
@@ -13,20 +13,20 @@ export const Header: React.FC = () => {
         </div>
         <div>
           <div className="brand-title">Corvo Engineering</div>
-          <div className="brand-subtitle">Policy-Driven PR-to-PO Decision Engine (Clean Architecture)</div>
+          <div className="brand-subtitle">PR-to-PO Decision Engine • Policy v5.0</div>
         </div>
       </div>
 
       <div className="header-badges">
-        <span className="badge badge-emerald" title="Policy as Data engine version">
+        <span className="badge badge-blue" title="Active Policy Version">
           <ShieldCheck size={14} />
-          {isLoadingPolicy ? 'Loading...' : `Active Policy: v${activePolicyVersion}`}
+          {isLoadingPolicy ? 'Loading...' : `Policy: v${activePolicyVersion}`}
         </span>
-        <span className="badge badge-blue" title="Operational Manufacturing Plants">
-          <Building2 size={14} /> Plants: PUN1 & CHK1
+        <span className="badge badge-dim" title="Operational Plants">
+          <Building2 size={14} /> PUN1 & CHK1
         </span>
-        <span className="badge badge-dim" title="System Operational Status">
-          <Activity size={14} color="#10b981" /> Engine Online
+        <span className="badge badge-emerald" title="Engine Status">
+          <Activity size={14} /> Online
         </span>
       </div>
     </header>

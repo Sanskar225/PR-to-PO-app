@@ -15,9 +15,9 @@ export const QuickPromptChips: React.FC<QuickPromptChipsProps> = ({ onSelectProm
 
   return (
     <div style={{ padding: '0 1rem 0.5rem 1rem' }}>
-      <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-        <Sparkles size={12} color="var(--accent-cyan)" />
-        <span>Quick Test Scenarios:</span>
+      <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.3rem', fontWeight: 600 }}>
+        <Sparkles size={12} color="var(--accent-orange)" />
+        <span>Example Worked Requisitions:</span>
       </div>
       <div className="quick-chips">
         {quickPrompts.map((q, idx) => (

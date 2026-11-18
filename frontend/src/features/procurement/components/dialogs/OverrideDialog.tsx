@@ -40,7 +40,7 @@ export const OverrideDialog: React.FC<OverrideDialogProps> = ({
       onClose={onClose}
       title={
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <ShieldAlert size={20} color="var(--accent-amber)" />
+          <ShieldAlert size={20} color="var(--accent-orange)" />
           <span>Override Requirement {requirement.group_id}</span>
         </div>
       }
@@ -60,10 +60,10 @@ export const OverrideDialog: React.FC<OverrideDialogProps> = ({
           <strong>Policy Clause 8.1</strong> authorizes Lead Buyers to manually override automated routing with a recorded audit justification.
         </p>
 
-        <div style={{ background: 'var(--bg-secondary)', padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', marginBottom: '1.25rem', border: '1px solid var(--border-color)', fontSize: '0.85rem' }}>
+        <div style={{ background: '#fafafa', padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', marginBottom: '1.25rem', border: '1px solid var(--border-color)', fontSize: '0.85rem' }}>
           <div><strong>Item Code:</strong> {requirement.resolved_item_code}</div>
           <div style={{ marginTop: '0.25rem' }}>
-            <strong>System Decided Route:</strong> <code style={{ color: 'var(--accent-cyan)' }}>{requirement.route}</code>
+            <strong>System Decided Route:</strong> <code>{requirement.route}</code>
           </div>
           <div style={{ marginTop: '0.25rem' }}>
             <strong>Requirement Value:</strong> {formatINR(requirement.group_value_inr)}

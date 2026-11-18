@@ -22,7 +22,7 @@ export const PRPreviewCard: React.FC<PRPreviewCardProps> = ({
     <Card
       title={
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <FileText size={18} color="var(--accent-cyan)" />
+          <FileText size={18} color="var(--accent-orange)" />
           <span>Structured PR Preview</span>
         </div>
       }
@@ -41,7 +41,7 @@ export const PRPreviewCard: React.FC<PRPreviewCardProps> = ({
               <span style={{ color: 'var(--text-dim)', display: 'block', fontSize: '0.75rem', marginBottom: '2px' }}>
                 Item Code:
               </span>
-              <code style={{ color: 'var(--accent-cyan)', fontWeight: 600 }}>
+              <code style={{ fontWeight: 600 }}>
                 {parsedPR.item_code || 'Resolving...'}
               </code>
             </div>
@@ -58,69 +58,72 @@ export const PRPreviewCard: React.FC<PRPreviewCardProps> = ({
                 Quantity:
               </span>
               <strong>
-                {parsedPR.quantity ? `${parsedPR.quantity} ${parsedPR.uom || 'NOS'}` : 'Pending'}
+                {parsedPR.quantity !== null && parsedPR.quantity !== undefined
+                  ? `${parsedPR.quantity} ${parsedPR.uom || 'units'}`
+                  : 'Pending'}
               </strong>
             </div>
 
             <div>
               <span style={{ color: 'var(--text-dim)', display: 'block', fontSize: '0.75rem', marginBottom: '2px' }}>
-                Urgency:
-              </span>
-              <Badge variant={parsedPR.urgency === 'Emergency' ? 'amber' : 'dim'} size="sm">
-                {parsedPR.urgency || 'Normal'}
-              </Badge>
-            </div>
-
-            <div style={{ gridColumn: 'span 2' }}>
-              <span style={{ color: 'var(--text-dim)', display: 'block', fontSize: '0.75rem', marginBottom: '2px' }}>
-                Item Description:
-              </span>
-              <strong>{parsedPR.description || 'Pending'}</strong>
-            </div>
-
-            <div style={{ gridColumn: 'span 2' }}>
-              <span style={{ color: 'var(--text-dim)', display: 'block', fontSize: '0.75rem', marginBottom: '2px' }}>
-                Need-By Date:
+                Delivery Date:
               </span>
               <strong>{parsedPR.need_by_date || 'Pending'}</strong>
             </div>
           </div>
 
-          {parsedPR.missing_fields && parsedPR.missing_fields.length > 0 && (
-            <div
-              style={{
-                marginTop: '1.25rem',
-                padding: '0.75rem 1rem',
-                background: 'rgba(245, 158, 11, 0.1)',
-                border: '1px solid rgba(245, 158, 11, 0.3)',
-                borderRadius: 'var(--radius-sm)',
-                fontSize: '0.8rem',
-                color: '#fbbf24',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem'
-              }}
-            >
-              <AlertTriangle size={15} style={{ flexShrink: 0 }} />
-              <span>Missing attributes required by policy: <strong>{parsedPR.missing_fields.join(', ')}</strong></span>
+          <div style={{ marginTop: '0.85rem', paddingTop: '0.85rem', borderTop: '1px solid var(--border-color)' }}>
+            <span style={{ color: 'var(--text-dim)', display: 'block', fontSize: '0.75rem', marginBottom: '2px' }}>
+              Extracted Description:
+            </span>
+            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+              {parsedPR.description || 'N/A'}
+            </div>
+          </div>
+
+          {parsedPR.urgency && (
+            <div style={{ marginTop: '0.5rem' }}>
+              <Badge variant="amber" size="sm">
+                FLAG: Urgent Requirement
+              </Badge>
             </div>
           )}
 
-          {isComplete && (
+          {parsedPR.missing_fields && parsedPR.missing_fields.length > 0 && (
+            <div
+              style={{
+                marginTop: '1rem',
+                padding: '0.75rem',
+                background: '#fffbeb',
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid #fde68a',
+                fontSize: '0.8rem',
+                color: '#b45309'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600, marginBottom: '2px' }}>
+                <AlertTriangle size={14} /> Missing required attributes:
+              </div>
+              <div>{parsedPR.missing_fields.join(', ')}</div>
+            </div>
+          )}
+
+          <div style={{ marginTop: '1.25rem' }}>
             <Button
-              variant="success"
-              style={{ width: '100%', marginTop: '1.25rem' }}
+              variant="primary"
               onClick={onConfirm}
+              disabled={!isComplete || isLoading}
               isLoading={isLoading}
+              style={{ width: '100%' }}
               icon={<CheckCircle2 size={16} />}
             >
-              Confirm & Submit PR
+              Confirm and Route to Policy Engine
             </Button>
-          )}
+          </div>
         </div>
       ) : (
-        <div style={{ textAlign: 'center', padding: '2.5rem 1rem', color: 'var(--text-dim)', fontSize: '0.875rem' }}>
-          <p style={{ margin: 0 }}>Type your procurement requirement in the chat to auto-generate the PR preview card.</p>
+        <div style={{ textAlign: 'center', padding: '2.5rem 1rem', color: 'var(--text-dim)', fontSize: '0.85rem' }}>
+          No active PR intake. Type your requirement or pick a quick prompt to begin.
         </div>
       )}
     </Card>

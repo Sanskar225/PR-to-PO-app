@@ -8,9 +8,9 @@ export const Footer: React.FC = () => {
   return (
     <footer style={{
       marginTop: 'auto',
-      padding: '1.5rem 2rem',
+      padding: '1.25rem 2rem',
       borderTop: '1px solid var(--border-color)',
-      background: 'var(--bg-secondary)',
+      background: '#ffffff',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
@@ -20,8 +20,8 @@ export const Footer: React.FC = () => {
       color: 'var(--text-dim)'
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-        <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <Shield size={14} color="var(--accent-cyan)" />
+        <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-main)' }}>
+          <Shield size={14} color="var(--accent-orange)" />
           <strong>Corvo Engineering Procurement</strong> (Policy v{activePolicyVersion})
         </span>
         <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
@@ -44,9 +44,9 @@ export const Footer: React.FC = () => {
           rel="noreferrer"
           style={{ color: 'var(--text-muted)', textDecoration: 'none' }}
         >
-          FastAPI Swagger Docs
+          Swagger Docs
         </a>
-        <span>Cantill.ai Round 1 Submission</span>
+        <span>Cantill.ai Round 1</span>
       </div>
     </footer>
   );

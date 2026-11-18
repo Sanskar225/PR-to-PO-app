@@ -76,19 +76,19 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         pointerEvents: 'none'
       }}>
         {toasts.map(toast => {
-          let icon = <Info size={18} color="var(--accent-cyan)" />;
-          let borderColor = 'rgba(6, 182, 212, 0.4)';
-          let bgColor = 'rgba(15, 23, 42, 0.95)';
+          let icon = <Info size={18} color="var(--accent-orange)" />;
+          let borderColor = 'var(--accent-orange)';
+          let bgColor = '#ffffff';
 
           if (toast.type === 'success') {
-            icon = <CheckCircle2 size={18} color="#10b981" />;
-            borderColor = 'rgba(16, 185, 129, 0.4)';
+            icon = <CheckCircle2 size={18} color="#16a34a" />;
+            borderColor = '#86efac';
           } else if (toast.type === 'error') {
-            icon = <AlertCircle size={18} color="#ef4444" />;
-            borderColor = 'rgba(239, 68, 68, 0.4)';
+            icon = <AlertCircle size={18} color="#dc2626" />;
+            borderColor = '#fca5a5';
           } else if (toast.type === 'warning') {
-            icon = <AlertTriangle size={18} color="#f59e0b" />;
-            borderColor = 'rgba(245, 158, 11, 0.4)';
+            icon = <AlertTriangle size={18} color="#d97706" />;
+            borderColor = '#fde68a';
           }
 
           return (
@@ -100,24 +100,23 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
                 border: `1px solid ${borderColor}`,
                 borderRadius: '8px',
                 padding: '0.85rem 1rem',
-                boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5)',
+                boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05)',
                 display: 'flex',
                 alignItems: 'flex-start',
                 gap: '0.75rem',
-                color: '#f8fafc',
+                color: '#09090b',
                 pointerEvents: 'auto',
-                backdropFilter: 'blur(8px)',
                 animation: 'slideIn 0.25s ease-out'
               }}
             >
               <div style={{ flexShrink: 0, marginTop: '2px' }}>{icon}</div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 {toast.title && (
-                  <div style={{ fontWeight: 600, fontSize: '0.875rem', marginBottom: '2px' }}>
+                  <div style={{ fontWeight: 600, fontSize: '0.875rem', marginBottom: '2px', color: '#09090b' }}>
                     {toast.title}
                   </div>
                 )}
-                <div style={{ fontSize: '0.825rem', color: '#cbd5e1', lineHeight: '1.35', wordBreak: 'break-word' }}>
+                <div style={{ fontSize: '0.825rem', color: '#52525b', lineHeight: '1.35', wordBreak: 'break-word' }}>
                   {toast.message}
                 </div>
               </div>
@@ -126,7 +125,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
                 style={{
                   background: 'none',
                   border: 'none',
-                  color: '#94a3b8',
+                  color: '#71717a',
                   cursor: 'pointer',
                   padding: '2px',
                   display: 'flex',

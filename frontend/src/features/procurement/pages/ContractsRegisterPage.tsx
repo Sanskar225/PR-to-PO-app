@@ -21,7 +21,7 @@ export const ContractsRegisterPage: React.FC = () => {
       <Card
         title={
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <FileText size={20} color="var(--accent-cyan)" />
+            <FileText size={20} color="var(--accent-orange)" />
             <span>Active Rate Contracts & Ceiling Headroom (Policy Section 4)</span>
           </div>
         }
@@ -47,7 +47,7 @@ export const ContractsRegisterPage: React.FC = () => {
         <div
           style={{
             padding: '1rem 1.25rem',
-            background: 'var(--bg-secondary)',
+            background: '#fafafa',
             border: '1px solid var(--border-color)',
             borderRadius: 'var(--radius-md)',
             marginBottom: '1.25rem',
@@ -59,8 +59,8 @@ export const ContractsRegisterPage: React.FC = () => {
           }}
         >
           <div>
-            <div style={{ fontSize: '0.875rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <FileCheck size={16} color="var(--accent-cyan)" />
+            <div style={{ fontSize: '0.875rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-main)' }}>
+              <FileCheck size={16} color="var(--accent-orange)" />
               <span>Ingest PDF-Only Executed Contract (Clause 4.4)</span>
             </div>
             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>

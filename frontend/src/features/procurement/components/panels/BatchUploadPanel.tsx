@@ -44,7 +44,7 @@ export const BatchUploadPanel: React.FC<BatchUploadPanelProps> = ({
       <a
         href={exportUrl}
         download="decisions.csv"
-        className="btn btn-success"
+        className="btn btn-primary"
         style={{ marginLeft: 'auto', textDecoration: 'none' }}
       >
         <Download size={16} />

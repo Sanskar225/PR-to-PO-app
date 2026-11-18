@@ -13,16 +13,16 @@ export const StatCard: React.FC<StatCardProps> = ({
   value,
   subtext,
   icon,
-  valueColor = '#fff',
+  valueColor = 'var(--text-main)',
 }) => {
   return (
     <div className="card" style={{ marginBottom: 0, padding: '1.25rem', position: 'relative', overflow: 'hidden' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
-        <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)', fontWeight: 500 }}>
+        <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.03em' }}>
           {label}
         </div>
         {icon && (
-          <div style={{ color: 'var(--text-dim)', opacity: 0.8 }}>
+          <div style={{ color: 'var(--accent-orange)' }}>
             {icon}
           </div>
         )}

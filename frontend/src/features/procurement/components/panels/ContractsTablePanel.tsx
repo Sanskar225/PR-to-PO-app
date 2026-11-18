@@ -1,5 +1,4 @@
 import React from 'react';
-import { FileCheck } from 'lucide-react';
 import { ContractItem } from '../../../../types';
 import { Badge } from '../../../../components/common/Badge';
 import { formatINR } from '../../lib/formatters';
@@ -11,7 +10,7 @@ interface ContractsTablePanelProps {
 export const ContractsTablePanel: React.FC<ContractsTablePanelProps> = ({ contracts }) => {
   if (contracts.length === 0) {
     return (
-      <div style={{ textAlign: 'center', padding: '3.5rem 1rem', color: 'var(--text-dim)', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)' }}>
+      <div style={{ textAlign: 'center', padding: '3.5rem 1rem', color: 'var(--text-dim)', background: '#ffffff', borderRadius: 'var(--radius-md)', border: '1px dashed var(--border-color)' }}>
         No contracts found in register.
       </div>
     );
@@ -40,7 +39,7 @@ export const ContractsTablePanel: React.FC<ContractsTablePanelProps> = ({ contra
             return (
               <tr key={c.contract_id}>
                 <td>
-                  <code style={{ color: 'var(--accent-cyan)', fontWeight: 600 }}>{c.contract_id}</code>
+                  <code style={{ fontWeight: 600 }}>{c.contract_id}</code>
                 </td>
                 <td>
                   <strong>{c.supplier_name}</strong>
@@ -61,43 +60,17 @@ export const ContractsTablePanel: React.FC<ContractsTablePanelProps> = ({ contra
                       ({pct}%)
                     </span>
                   </div>
-                </td>
-                <td>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                    <div
-                      style={{
-                        width: '90px',
-                        height: '6px',
-                        background: 'var(--bg-tertiary)',
-                        borderRadius: '4px',
-                        overflow: 'hidden'
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: `${pct}%`,
-                          height: '100%',
-                          background: isNearLimit ? 'var(--accent-rose)' : 'var(--accent-cyan)',
-                          transition: 'width 0.3s ease'
-                        }}
-                      />
-                    </div>
-                    <span style={{ fontSize: '0.8rem', fontWeight: 700, color: isNearLimit ? '#fb7185' : '#f8fafc' }}>
-                      {formatINR(remaining)}
-                    </span>
+                  <div style={{ width: '100px', height: '5px', background: '#f4f4f5', borderRadius: '4px', marginTop: '4px', overflow: 'hidden' }}>
+                    <div style={{ width: `${pct}%`, height: '100%', background: isNearLimit ? '#dc2626' : 'var(--accent-orange)' }} />
                   </div>
                 </td>
+                <td style={{ fontWeight: 700, color: isNearLimit ? '#dc2626' : 'var(--accent-orange)' }}>
+                  {formatINR(remaining)}
+                </td>
                 <td>
-                  {c.is_pdf_extracted ? (
-                    <Badge variant="purple" size="sm">
-                      <FileCheck size={12} style={{ display: 'inline', marginRight: '3px' }} />
-                      PDF Extracted
-                    </Badge>
-                  ) : (
-                    <Badge variant="dim" size="sm">
-                      CSV Register
-                    </Badge>
-                  )}
+                  <Badge variant={c.is_pdf_extracted ? 'emerald' : 'dim'} size="sm">
+                    {c.is_pdf_extracted ? 'PDF Ingested' : 'CSV Master'}
+                  </Badge>
                 </td>
               </tr>
             );

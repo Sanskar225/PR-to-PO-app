@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layers, CheckCircle2, ShoppingBag, DollarSign } from 'lucide-react';
+import { Layers, CheckCircle2, ShoppingBag, IndianRupee } from 'lucide-react';
 import { BuyerSummary } from '../../../../types';
 import { StatCard } from '../../../../components/common/StatCard';
 import { formatCompactINR } from '../../lib/formatters';
@@ -16,27 +16,28 @@ export const BuyerKpiPanel: React.FC<BuyerKpiPanelProps> = ({ summary, fallbackC
         label="Total Requirements"
         value={summary?.total_requirements ?? fallbackCount}
         icon={<Layers size={20} />}
-        subtext="Active grouped requisitions"
+        subtext="Grouped requisition lines"
+        valueColor="var(--text-main)"
       />
       <StatCard
         label="Direct POs"
         value={summary?.total_pos ?? 0}
         icon={<CheckCircle2 size={20} />}
-        valueColor="var(--accent-emerald)"
+        valueColor="var(--accent-orange)"
         subtext="Contract & Spot POs"
       />
       <StatCard
         label="Sourcing Events"
         value={summary?.total_sourcing ?? 0}
         icon={<ShoppingBag size={20} />}
-        valueColor="var(--accent-purple)"
+        valueColor="var(--text-main)"
         subtext="RFQ, RFP, & Capex"
       />
       <StatCard
-        label="Total Spend Value"
+        label="Total Value"
         value={formatCompactINR(summary?.total_value ?? 0)}
-        icon={<DollarSign size={20} />}
-        valueColor="var(--accent-cyan)"
+        icon={<IndianRupee size={20} />}
+        valueColor="var(--accent-orange)"
         subtext="Consolidated PR valuation"
       />
     </div>

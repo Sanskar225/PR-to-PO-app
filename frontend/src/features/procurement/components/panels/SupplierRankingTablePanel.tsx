@@ -10,7 +10,7 @@ interface SupplierRankingTablePanelProps {
 export const SupplierRankingTablePanel: React.FC<SupplierRankingTablePanelProps> = ({ entries }) => {
   if (entries.length === 0) {
     return (
-      <div style={{ textAlign: 'center', padding: '3.5rem 1rem', color: 'var(--text-dim)', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--border-color)' }}>
+      <div style={{ textAlign: 'center', padding: '3.5rem 1rem', color: 'var(--text-dim)', background: '#ffffff', borderRadius: 'var(--radius-md)', border: '1px dashed var(--border-color)' }}>
         No suppliers match the search query.
       </div>
     );
@@ -43,7 +43,7 @@ export const SupplierRankingTablePanel: React.FC<SupplierRankingTablePanelProps>
                     rowSpan={suppliers.length}
                     style={{ verticalAlign: 'top', borderRight: '1px solid var(--border-color)', fontWeight: 700 }}
                   >
-                    <code style={{ color: 'var(--accent-cyan)' }}>{itemCode}</code>
+                    <code>{itemCode}</code>
                   </td>
                 ) : null}
                 <td>
@@ -57,23 +57,21 @@ export const SupplierRankingTablePanel: React.FC<SupplierRankingTablePanelProps>
                 <td>
                   <strong>{supp.supplier_name}</strong>
                 </td>
-                <td style={{ color: 'var(--accent-cyan)', fontWeight: 700 }}>
-                  {formatINR(supp.reference_price)}
+                <td style={{ color: 'var(--accent-orange)', fontWeight: 700 }}>
+                  {supp.reference_price ? formatINR(supp.reference_price) : 'N/A'}
                 </td>
                 <td>
-                  <strong style={{ color: '#fff' }}>{supp.composite_score}</strong>
+                  <strong style={{ color: 'var(--text-main)' }}>{supp.composite_score.toFixed(2)}</strong>
                 </td>
                 <td>{supp.po_count_548d}</td>
-                <td>{supp.recency_score}</td>
+                <td>{supp.recency_score !== undefined ? supp.recency_score.toFixed(2) : '0.00'}</td>
                 <td>
-                  {supp.has_contract ? (
-                    <span style={{ color: '#34d399', fontWeight: 600 }}>Active</span>
-                  ) : (
-                    <span style={{ color: 'var(--text-dim)' }}>None</span>
-                  )}
+                  <Badge variant={supp.has_contract ? 'emerald' : 'dim'} size="sm">
+                    {supp.has_contract ? 'Yes' : 'No'}
+                  </Badge>
                 </td>
-                <td>{supp.on_time_pct}%</td>
-                <td>{supp.quality_rating} / 5.0</td>
+                <td>{supp.on_time_pct ? `${supp.on_time_pct}%` : 'N/A'}</td>
+                <td>{supp.quality_rating ? `${supp.quality_rating}/5` : 'N/A'}</td>
               </tr>
             ))
           )}
