@@ -16,6 +16,7 @@ from app.domain.repositories.interfaces import (
 )
 from app.infrastructure.matching.rapidfuzz_matcher import RapidFuzzItemMatcher
 from app.application.dto.schemas import PRLineDTO, DecisionOutputDTO, BatchProcessResultDTO
+from app.core.date_utils import parse_dt, parse_d
 
 class ProcessBatchUseCase:
     def __init__(
@@ -49,8 +50,8 @@ class ProcessBatchUseCase:
         domain_lines: List[PurchaseRequisitionLine] = []
         for dto in pr_dtos:
             resolved_code, score = matcher.resolve_item(dto.item_code, dto.description)
-            created_dt = datetime.strptime(dto.created_at[:16], "%Y-%m-%d %H:%M")
-            need_by = date.fromisoformat(dto.need_by_date[:10])
+            created_dt = parse_dt(dto.created_at)
+            need_by = parse_d(dto.need_by_date)
             urgency = UrgencyLevel.from_str(dto.urgency)
 
             domain_lines.append(PurchaseRequisitionLine(

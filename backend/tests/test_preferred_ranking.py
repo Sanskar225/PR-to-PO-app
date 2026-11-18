@@ -25,19 +25,22 @@ def score_supplier(po_count, recency, has_contract, on_time_pct, quality_rating)
     )
     return score
 
-if __name__ == "__main__":
+def test_ranking_benchmarks():
     # Test ITM-1048
     s029 = score_supplier(7, 1.0, True, 81, 3.1)
     s030 = score_supplier(4, 1.0, False, 72, 3.4)
-    print(f"ITM-1048: S029={s029:.2f}, S030={s030:.2f} -> S029 > S030: {s029 > s030}")
+    assert s029 > s030, "S029 must rank higher than S030 for ITM-1048"
 
     # Test ITM-1036
     s023 = score_supplier(2, 1.0, False, 74, 3.9)
     s022 = score_supplier(2, 0.5, False, 77, 3.5)
     s024 = score_supplier(1, 0.0, False, 89, 4.1)
-    print(f"ITM-1036: S023={s023:.2f}, S022={s022:.2f}, S024={s024:.2f} -> Order S023 > S022 > S024: {s023 > s022 > s024}")
+    assert s023 > s022 > s024, "ITM-1036 order must be S023 > S022 > S024"
 
     # Test ITM-1016
     s009 = score_supplier(1, 0.5, True, 83, 4.6)
     s010 = score_supplier(1, 0.5, False, 80, 3.9)
-    print(f"ITM-1016: S009={s009:.2f}, S010={s010:.2f} -> S009 > S010: {s009 > s010}")
+    assert s009 > s010, "S009 must rank higher than S010 for ITM-1016"
+
+if __name__ == "__main__":
+    test_ranking_benchmarks()

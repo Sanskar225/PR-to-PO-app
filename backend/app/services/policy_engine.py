@@ -4,6 +4,7 @@ import copy
 from app.models.schemas import (
     PRLineInput, DecisionRecord, PolicyDocument, Item, Supplier, Contract, POHistoryEntry
 )
+from app.core.date_utils import parse_dt, parse_d
 from app.services.data_loader import DataLoader
 from app.services.fuzzy_matcher import FuzzyMatcher
 from app.services.preferred_suppliers import PreferredSupplierService
@@ -17,9 +18,9 @@ class RequirementGroupInternal:
         self.pr_lines: List[PRLineInput] = [first_pr]
         
         # Parsed dates
-        self.first_created_dt = datetime.strptime(first_pr.created_at, "%Y-%m-%d %H:%M")
+        self.first_created_dt = parse_dt(first_pr.created_at)
         self.req_date_str = self.first_created_dt.strftime("%Y-%m-%d")
-        self.first_need_by_dt = datetime.strptime(first_pr.need_by_date[:10], "%Y-%m-%d").date()
+        self.first_need_by_dt = parse_d(first_pr.need_by_date)
 
     @property
     def total_quantity(self) -> float:
@@ -37,13 +38,13 @@ class RequirementGroupInternal:
         if self.plant != pr.plant:
             return False
             
-        pr_dt = datetime.strptime(pr.created_at, "%Y-%m-%d %H:%M")
+        pr_dt = parse_dt(pr.created_at)
         if (pr_dt - self.first_created_dt).total_seconds() > (window_days * 86400):
             return False
         if pr_dt < self.first_created_dt:
             return False
             
-        pr_need_by = datetime.strptime(pr.need_by_date[:10], "%Y-%m-%d").date()
+        pr_need_by = parse_d(pr.need_by_date)
         if abs((pr_need_by - self.first_need_by_dt).days) > need_by_days:
             return False
             
@@ -76,7 +77,7 @@ class PolicyEngine:
             annotated_prs.append({
                 "pr": pr,
                 "resolved_item_code": resolved_code,
-                "created_dt": datetime.strptime(pr.created_at, "%Y-%m-%d %H:%M")
+                "created_dt": parse_dt(pr.created_at)
             })
 
         annotated_prs.sort(key=lambda x: (x["created_dt"], x["pr"].pr_no, x["pr"].pr_line))
@@ -198,7 +199,7 @@ class PolicyEngine:
         """
         item_code = group.resolved_item_code
         req_date = group.req_date_str
-        req_date_obj = datetime.strptime(req_date, "%Y-%m-%d").date()
+        req_date_obj = parse_d(req_date)
         total_qty = group.total_quantity
 
         # Case 1: NEW item (Policy 1.2)
@@ -225,8 +226,8 @@ class PolicyEngine:
             if item_code in c.lines:
                 supp = self.data_loader.suppliers.get(c.supplier_id)
                 if supp and supp.status == "Active":
-                    c_start = datetime.strptime(c.start_date[:10], "%Y-%m-%d").date()
-                    c_end = datetime.strptime(c.end_date[:10], "%Y-%m-%d").date()
+                    c_start = parse_d(c.start_date)
+                    c_end = parse_d(c.end_date)
                     if c_start <= req_date_obj <= c_end:
                         rate = c.lines[item_code]
                         applicable_contracts.append((c, rate))
@@ -264,7 +265,7 @@ class PolicyEngine:
             date_365_ago = req_date_obj - timedelta(days=365)
             recent_pos = [
                 po for po in self.data_loader.po_history
-                if po.item_code == item_code and date_365_ago <= datetime.strptime(po.po_date[:10], "%Y-%m-%d").date() <= req_date_obj
+                if po.item_code == item_code and date_365_ago <= parse_d(po.po_date) <= req_date_obj
             ]
             if recent_pos:
                 # sort by date and po_number descending to pick the latest PO
@@ -281,7 +282,7 @@ class PolicyEngine:
         date_365_ago = req_date_obj - timedelta(days=365)
         bought_in_last_365_active = any(
             po.item_code == item_code and
-            date_365_ago <= datetime.strptime(po.po_date[:10], "%Y-%m-%d").date() <= req_date_obj and
+            date_365_ago <= parse_d(po.po_date) <= req_date_obj and
             self.data_loader.suppliers.get(po.supplier_id) and
             self.data_loader.suppliers.get(po.supplier_id).status == "Active"
             for po in self.data_loader.po_history

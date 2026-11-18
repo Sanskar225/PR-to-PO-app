@@ -11,9 +11,15 @@ from app.infrastructure.repositories.sql_repositories import (
 from app.application.use_cases.process_batch_use_case import ProcessBatchUseCase
 from app.application.dto.schemas import PRLineDTO
 
-def run_tests():
+def test_worked_examples():
     seed_database()
     db = SessionLocal()
+
+    # Ensure baseline policy 5.0 is active
+    from app.db.models import PolicyVersionModel
+    for r in db.query(PolicyVersionModel).all():
+        r.is_active = (r.version == "5.0")
+    db.commit()
 
     use_case = ProcessBatchUseCase(
         item_repo=SQLItemRepository(db),
@@ -167,4 +173,4 @@ def run_tests():
     print("\nALL WORKED EXAMPLES MATCH 100% PERFECTLY (CLEAN ARCHITECTURE)!")
 
 if __name__ == "__main__":
-    run_tests()
+    test_worked_examples()

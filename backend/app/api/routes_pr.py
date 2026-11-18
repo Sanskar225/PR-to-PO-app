@@ -109,28 +109,58 @@ async def process_batch(file: UploadFile = File(...), db: Session = Depends(get_
         batch_id = f"BATCH-{datetime.utcnow().strftime('%Y%m%d%H%M%S')}-{uuid.uuid4().hex[:6]}"
         policy = policy_manager.get_active_policy()
         
+        df.columns = [str(c).strip() for c in df.columns]
+        col_map = {c.lower(): c for c in df.columns}
+        def get_val(row, *aliases, default=None):
+            for a in aliases:
+                col = col_map.get(a.lower())
+                if col is not None and pd.notna(row.get(col)):
+                    return row[col]
+            return default
+
         pr_lines: List[PRLineInput] = []
-        for _, row in df.iterrows():
-            item_code_val = str(row["item_code"]).strip() if pd.notna(row.get("item_code")) else None
-            if item_code_val == "" or item_code_val == "nan":
-                item_code_val = None
-                
-            est_price = float(row["estimated_unit_price"]) if pd.notna(row.get("estimated_unit_price")) else None
-            
+        for idx, row in df.iterrows():
+            code_val = get_val(row, "item_code", "item", "material_code")
+            if code_val is not None:
+                code_val = str(code_val).strip()
+                if code_val.lower() in ["", "nan", "none", "null"]:
+                    code_val = None
+
+            est_p_raw = get_val(row, "estimated_unit_price", "unit_price", "est_price", "price")
+            est_p = None
+            if est_p_raw is not None:
+                try:
+                    est_p = float(est_p_raw)
+                except (ValueError, TypeError):
+                    est_p = None
+
+            qty_raw = get_val(row, "quantity", "qty", default=1.0)
+            try:
+                qty = float(qty_raw)
+            except (ValueError, TypeError):
+                qty = 1.0
+
+            pr_no = str(get_val(row, "pr_no", "pr_number", "pr", default=f"PR-{idx+1:05d}")).strip()
+            pr_line_raw = get_val(row, "pr_line", "line", "line_no", default=1)
+            try:
+                pr_line = int(pr_line_raw)
+            except (ValueError, TypeError):
+                pr_line = 1
+
             pr_lines.append(PRLineInput(
-                pr_no=str(row["pr_no"]).strip(),
-                pr_line=int(row["pr_line"]),
-                created_at=str(row["created_at"]).strip(),
-                requester=str(row.get("requester", "Requester")).strip(),
-                department=str(row.get("department", "Stores")).strip(),
-                plant=str(row["plant"]).strip(),
-                item_code=item_code_val,
-                description=str(row["description"]).strip(),
-                quantity=float(row["quantity"]),
-                uom=str(row.get("uom", "NOS")).strip(),
-                estimated_unit_price=est_price,
-                need_by_date=str(row["need_by_date"]).strip(),
-                urgency=str(row.get("urgency", "Normal")).strip()
+                pr_no=pr_no,
+                pr_line=pr_line,
+                created_at=str(get_val(row, "created_at", "pr_date", "date", default="2026-11-01 09:00")).strip(),
+                requester=str(get_val(row, "requester", default="Requester")).strip(),
+                department=str(get_val(row, "department", default="Stores")).strip(),
+                plant=str(get_val(row, "plant", "plant_code", default="PUN1")).strip(),
+                item_code=code_val,
+                description=str(get_val(row, "description", "item_description", "desc", default="")).strip(),
+                quantity=qty,
+                uom=str(get_val(row, "uom", "unit", default="NOS")).strip(),
+                estimated_unit_price=est_p,
+                need_by_date=str(get_val(row, "need_by_date", "need_by", "delivery_date", default="2026-11-15")).strip(),
+                urgency=str(get_val(row, "urgency", "priority", default="Normal")).strip()
             ))
             
         engine = PolicyEngine(data_loader, policy)

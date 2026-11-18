@@ -1,7 +1,8 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from typing import List, Dict, Optional, Tuple
 import pandas as pd
 from app.models.schemas import PreferredSupplierRecord, Supplier, Contract, POHistoryEntry
+from app.core.date_utils import parse_d
 
 class PreferredSupplierService:
     def __init__(self, data_loader):
@@ -26,7 +27,7 @@ class PreferredSupplierService:
                 "quality": 2.0
             }
 
-        ref_date = datetime.strptime(ref_date_str[:10], "%Y-%m-%d").date()
+        ref_date = parse_d(ref_date_str)
         date_548_ago = ref_date - timedelta(days=548)
 
         # 1. Filter PO history for item in [date_548_ago, ref_date]
@@ -39,7 +40,7 @@ class PreferredSupplierService:
         # supplier_id -> { 'po_count': int, 'last_po_date': date, 'most_recent_price': float }
         supp_po_stats: Dict[str, Dict] = {}
         for po in item_pos:
-            po_d = datetime.strptime(po.po_date[:10], "%Y-%m-%d").date()
+            po_d = parse_d(po.po_date)
             if date_548_ago <= po_d <= ref_date:
                 if po.supplier_id not in supp_po_stats:
                     supp_po_stats[po.supplier_id] = {
@@ -59,7 +60,7 @@ class PreferredSupplierService:
         supp_contracts: Dict[str, Dict] = {}
         for c_id, c in self.data_loader.contracts.items():
             if item_code in c.lines:
-                c_start = datetime.strptime(c.start_date[:10], "%Y-%m-%d").date()
+                c_start = parse_d(c.start_date)
                 if c_start <= ref_date:
                     if c.supplier_id not in supp_contracts:
                         supp_contracts[c.supplier_id] = {

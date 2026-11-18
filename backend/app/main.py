@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -10,10 +11,20 @@ from app.core.logging import logger
 from app.db.seed import seed_database
 from app.presentation.api_v1.router import api_router
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    try:
+        seed_database()
+        logger.info("Database initialized and verified.")
+    except Exception as e:
+        logger.error(f"Database startup warning: {e}")
+    yield
+
 app = FastAPI(
     title=APP_TITLE,
     version=APP_VERSION,
-    description="Automated Policy-Driven PR-to-PO Decision Engine for Corvo Engineering (Clean Architecture & DDD)"
+    description="Automated Policy-Driven PR-to-PO Decision Engine for Corvo Engineering (Clean Architecture & DDD)",
+    lifespan=lifespan
 )
 
 # Global CORS
@@ -34,14 +45,6 @@ async def domain_exception_handler(request: Request, exc: DomainException):
         content={"status": "error", "code": exc.code, "message": exc.message}
     )
 
-# Startup hook to guarantee database is seeded
-@app.on_event("startup")
-def on_startup():
-    try:
-        seed_database()
-        logger.info("Database initialized and verified.")
-    except Exception as e:
-        logger.error(f"Database startup warning: {e}")
 
 # Mount API Router (/api)
 @app.get("/api/health")
