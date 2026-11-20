@@ -102,3 +102,26 @@ We modeled policy rules as declarative JSON data schemas containing:
 - Sourcing suggestion counts.
 
 The policy amendment engine parses amendment documents/text, computes a plain-language diff, and applies version updates on buyer approval. In blind test simulation, updating the Spot PO limit from ₹2,00,000 to ₹3,00,000 automatically reclassified 14 RFQ requirements into Spot POs with zero code modification.
+
+---
+
+## 8. Blind-Test Execution: Policy Amendment No. 1 (v5.1) Decisions & Analysis
+
+### Overview of Amendment Changes (Effective 1 December 2026)
+1. **A1 Packaging Spot Limit**: Rule 5.4 spot PO ceiling reduced from ₹2,00,000 to ₹1,00,000 for items in the `Packaging` category. Requirements $\ge$ ₹1,00,000 must be sourced.
+2. **A2 RFP Threshold**: Formal RFP threshold (Rules 5.5 and 5.6) reduced from ₹10,00,000 to ₹8,00,000. Requirements $< 8\text{L}$ go to RFQ (3 suppliers); $\ge 8\text{L}$ go to RFP (5 suppliers).
+3. **A3 Chakan Electrical Safety (Rule 5.2A)**: At plant `CHK1`, all requirements in `Electrical Spares` category valued $\ge$ ₹50,000 must be sourced (RFQ if $< 8\text{L}$, RFP if $\ge 8\text{L}$), overriding Emergency or Spot PO routes. Contract POs (Rule 5.2) remain valid.
+
+### Route Distribution Comparison (Run 1 vs Run 2)
+
+| Route | Run 1 (Policy 5.0) | Run 2 (Policy 5.1) | Delta & Impact Summary |
+| :--- | :---: | :---: | :--- |
+| **CONTRACT_PO** | 40 | 40 | **0** (Rule 5.2 preserved across both runs, including CHK1 electrical spares) |
+| **SPOT_PO** | 83 | 65 | **-18** (Packaging $\ge$ 1L moved to RFQ; CHK1 Electrical Spares $\ge$ 50k moved to RFQ) |
+| **RFQ** | 39 | 52 | **+13** (Gained 8 Packaging lines $\ge$ 1L and 9 CHK1 Electrical Spares; lost 5 lines to RFP) |
+| **RFP** | 6 | 12 | **+6** (Gained 5 high-value lines $\ge$ 8L from RFQ, plus 1 high-value sourcing line) |
+| **CAPEX_SOURCING** | 9 | 9 | **0** (Clause 5.1 priority maintained) |
+| **EMERGENCY_PO** | 10 | 9 | **-1** (PR-26-00558 CHK1 Electrical Spares $\ge$ 50k reclassified to RFQ under Rule 5.2A) |
+| **NEW_ITEM_SOURCING**| 3 | 3 | **0** (Clause 1.2 preserved) |
+| **Total Lines** | **190** | **190** | **100% Accounted** |
+
